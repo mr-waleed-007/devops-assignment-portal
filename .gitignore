@@ -6,3 +6,10 @@ instance/
 test-report.json
 junit.xml
 .env
+
+junit.xml
+testreport.json
+reports_history/
+email_body.txt
+.venv/
+__pycache__/
