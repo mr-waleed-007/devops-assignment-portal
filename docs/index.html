@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Assignment Portal Demo</title>
+<style>
+body{font-family:Arial,sans-serif;background:#f3f6fb;color:#172033;margin:0;padding:30px}
+main{max-width:760px;margin:auto;background:white;padding:25px;border-radius:12px}
+label{display:block;margin:13px 0 5px;font-weight:bold}input{width:100%;padding:10px;border:1px solid #bbb;border-radius:6px;box-sizing:border-box}
+button{margin-top:15px;padding:11px 18px;background:#174ea6;color:white;border:0;border-radius:6px}
+.item{border-top:1px solid #ddd;padding:12px 0;overflow-wrap:anywhere}
+.note{color:#555}
+</style></head>
+<body><main>
+<h1>Assignment Submission Portal</h1>
+<p class="note">Static GitHub Pages demonstration. Entries are stored in this browser only. The full Flask application stores submissions on the server.</p>
+<form id="form">
+<label>Student name</label><input id="name" required>
+<label>Registration number</label><input id="reg" required>
+<label>Assignment title</label><input id="title" required>
+<label>Submission URL</label><input id="url" type="url" placeholder="https://example.com" required>
+<button>Submit assignment</button>
+</form>
+<p id="message" role="status"></p><h2>Submissions</h2><div id="list"></div>
+</main>
+<script>
+const key="assignment-portal-demo";
+const nameInput=document.getElementById("name"), regInput=document.getElementById("reg"), titleInput=document.getElementById("title"), urlInput=document.getElementById("url"), message=document.getElementById("message");
+let entries=JSON.parse(localStorage.getItem(key)||"[]");
+function draw(){document.getElementById("list").innerHTML=entries.map(x=>`<div class="item"><b>${escapeHtml(x.title)}</b><br>${escapeHtml(x.name)} | ${escapeHtml(x.reg)}<br><a href="${encodeURI(x.url)}" target="_blank" rel="noopener">${escapeHtml(x.url)}</a></div>`).join("")||"<p>No submissions yet.</p>";}
+function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+document.getElementById("form").addEventListener("submit",e=>{e.preventDefault();const x={name:nameInput.value.trim(),reg:regInput.value.trim(),title:titleInput.value.trim(),url:urlInput.value.trim()};try{const u=new URL(x.url);if(!["http:","https:"].includes(u.protocol))throw Error();}catch{message.textContent="Enter a valid HTTP or HTTPS URL.";return;}entries.push(x);localStorage.setItem(key,JSON.stringify(entries));message.textContent="Submission saved in this browser.";e.target.reset();draw();});
+draw();
+</script></body></html>

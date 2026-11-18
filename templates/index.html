@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Assignment Submission Portal</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: Arial, sans-serif; background: #f3f6fb; color: #172033; }
+    main { max-width: 900px; margin: 36px auto; padding: 0 18px; }
+    .panel { background: white; padding: 26px; border-radius: 12px; box-shadow: 0 5px 22px #17203312; margin-bottom: 22px; }
+    h1, h2 { margin-top: 0; }
+    label { display: block; font-weight: 600; margin: 14px 0 6px; }
+    input { width: 100%; padding: 12px; border: 1px solid #cbd3df; border-radius: 7px; font-size: 15px; }
+    button { margin-top: 18px; background: #174ea6; color: white; border: 0; border-radius: 7px; padding: 12px 20px; cursor: pointer; font-size: 15px; }
+    .message { padding: 11px; border-radius: 7px; margin: 10px 0; }
+    .error { background: #ffe8e8; color: #9a2020; }
+    .success { background: #e4f7e9; color: #17652d; }
+    .submission { border-top: 1px solid #e5e9f0; padding: 14px 0; overflow-wrap: anywhere; }
+    .muted { color: #647084; }
+  </style>
+</head>
+<body>
+<main>
+  <section class="panel">
+    <h1>Assignment Submission Portal</h1>
+    <p class="muted">Enter your details and provide a link to your assignment.</p>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, message in messages %}
+        <div class="message {{ category }}">{{ message }}</div>
+      {% endfor %}
+    {% endwith %}
+    <form method="post" action="{{ url_for('submit') }}">
+      <label for="name">Student name</label>
+      <input id="name" name="name" required>
+      <label for="registration_number">Registration number</label>
+      <input id="registration_number" name="registration_number" required>
+      <label for="assignment_title">Assignment title</label>
+      <input id="assignment_title" name="assignment_title" required>
+      <label for="submission_url">Submission URL</label>
+      <input id="submission_url" name="submission_url" type="url" placeholder="https://example.com/assignment" required>
+      <button type="submit">Submit assignment</button>
+    </form>
+  </section>
+
+  <section class="panel">
+    <h2>Saved submissions ({{ submissions|length }})</h2>
+    {% if submissions %}
+      {% for item in submissions %}
+        <div class="submission">
+          <strong>{{ item.assignment_title }}</strong><br>
+          {{ item.name }} | {{ item.registration_number }}<br>
+          <a href="{{ item.submission_url }}" target="_blank" rel="noopener noreferrer">{{ item.submission_url }}</a>
+        </div>
+      {% endfor %}
+    {% else %}
+      <p class="muted">No assignments have been submitted yet.</p>
+    {% endif %}
+  </section>
+</main>
+</body>
+</html>
